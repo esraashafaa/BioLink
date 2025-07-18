@@ -20,8 +20,9 @@ class User extends Authenticatable implements JWTSubject
      *
      * @var string
      */
-    protected $primaryKey = 'userID';
-
+    protected $primaryKey = 'userID';// Laravel now knows your primary key is userID
+    public $incrementing = true;        // if it's auto-increment (INT), keep this true
+    protected $keyType = 'int';  
     /**
      * The attributes that are mass assignable.
      *
@@ -64,5 +65,8 @@ public function getJWTCustomClaims()
 {
     return []; 
 }
-
+public function assets()
+{
+    return $this->hasMany(Asset::class, 'userID', 'userID');
+}
 }

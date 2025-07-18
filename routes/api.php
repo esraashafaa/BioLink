@@ -3,6 +3,8 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\AssetController;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,13 +16,23 @@ use App\Http\Controllers\AuthController;
 | be assigned to the "api" middleware group. Make something great!
 |
 */
-Route::middleware(['auth:api'])->group(function () {
-    Route::get('/profile', function () {
-        return response()->json(auth()->user());
-    });
+Route::resource('assets', AssetController::class)->only([
+    'store', 'show', 'update', 'destroy'
+]);
+Route::get('/users/{userID}/assets', [AssetController::class, 'getAssetsByUserID']);
+
+
+Route::resource('users', UserController::class)->only([
+    'index', 'show', 'store', 'update', 'destroy'
+]);
+
+Route::controller(AuthController::class)->group(function () {
+    Route::post('/register', 'register');
+    Route::post('/login', 'login');
 });
-Route::post('/register', [AuthController::class, 'register']);
-Route::post('/login', [AuthController::class, 'login']);
+
+Route::middleware(['jwt.auth'])->get('/my-assets', [AssetController::class, 'getMyAssets']);
+
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
