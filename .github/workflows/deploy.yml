@@ -3,7 +3,7 @@ name: Deploy to VPS
 on:
   push:
     branches:
-      - master
+      - main
 
 jobs:
   deploy:
@@ -27,7 +27,7 @@ jobs:
             cd BioLink
 
             # Pull latest changes
-            git pull origin master
+            git pull origin main
 
             # Stop existing containers
             docker-compose down
