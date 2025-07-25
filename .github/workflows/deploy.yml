@@ -3,7 +3,7 @@ name: Deploy to VPS
 on:
   push:
     branches:
-      - master
+      - main
 
 jobs:
   deploy:
@@ -29,12 +29,12 @@ jobs:
           ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_ed25519 root@173.249.12.68 << 'EOF'
             set -e
 
-            cd starter-laravel
+            cd BioLink
 
             echo "✅ Pulling latest changes..."
             git reset --hard
             git clean -fd
-            git pull origin master
+            git pull origin main
 
             echo "🛑 Stopping containers..."
             docker-compose down
