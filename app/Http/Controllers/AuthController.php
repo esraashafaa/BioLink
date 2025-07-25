@@ -5,6 +5,8 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use Illuminate\Support\Str;
+use Tymon\JWTAuth\Exceptions\JWTException;
+use Tymon\JWTAuth\Exceptions\TokenInvalidException;
 
 class AuthController extends Controller
 {
@@ -74,4 +76,36 @@ public function register(Request $request)
             // 'user' => $user
         ]);
     }
+
+
+    public function refresh(Request $request)
+{
+    try {
+        $newToken = JWTAuth::parseToken()->refresh();
+
+        return response()->json([
+            'message' => 'Token refreshed successfully',
+            'token' => $newToken,
+        ]);
+    } catch (TokenInvalidException $e) {
+        return response()->json(['message' => 'Invalid token'], 401);
+    } catch (JWTException $e) {
+        return response()->json(['message' => 'Token is required'], 400);
+    }
+}
+
+    public function me()
+{
+    try {
+        $user = auth()->user();
+
+        return response()->json([
+            'message' => 'User data fetched successfully',
+            'user' => $user
+        ]);
+    } catch (\Exception $e) {
+        return response()->json(['message' => 'Unauthorized'], 401);
+    }
+}
+
 }

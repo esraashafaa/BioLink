@@ -29,7 +29,11 @@ Route::resource('users', UserController::class)->only([
 Route::controller(AuthController::class)->group(function () {
     Route::post('/register', 'register');
     Route::post('/login', 'login');
+    Route::post('/refresh-token', 'refresh');
 });
+
+Route::middleware('auth:api')->get('/me', [AuthController::class, 'me']);
+
 
 Route::middleware(['jwt.auth'])->get('/my-assets', [AssetController::class, 'getMyAssets']);
 

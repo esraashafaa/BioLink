@@ -27,6 +27,12 @@ return [
 
     'secret' => env('JWT_SECRET'),
 
+    
+    // منع إعادة استخدام التوكن القديم
+    'blacklist_enabled' => env('JWT_BLACKLIST_ENABLED', true),
+
+    
+
     /*
     |--------------------------------------------------------------------------
     | JWT Authentication Keys
