@@ -3,7 +3,7 @@ name: Deploy to VPS
 on:
   push:
     branches:
-      - main
+      - master
 
 jobs:
   deploy:
@@ -19,26 +19,33 @@ jobs:
           mkdir -p ~/.ssh
           echo "${{ secrets.VPS_SSH_KEY }}" > ~/.ssh/id_ed25519
           chmod 600 ~/.ssh/id_ed25519
+          touch ~/.ssh/known_hosts
           ssh-keyscan -H 173.249.12.68 >> ~/.ssh/known_hosts
 
       - name: Deploy to VPS
+        env:
+          SSH_KEY: ${{ secrets.VPS_SSH_KEY }}
         run: |
-          ssh -i ~/.ssh/id_ed25519 root@173.249.12.68 << 'EOF'
-            cd BioLink
+          ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_ed25519 root@173.249.12.68 << 'EOF'
+            set -e
 
-            # Pull latest changes
-            git pull origin main
+            cd starter-laravel
 
-            # Stop existing containers
+            echo "✅ Pulling latest changes..."
+            git reset --hard
+            git clean -fd
+            git pull origin master
+
+            echo "🛑 Stopping containers..."
             docker-compose down
 
-            # Pull latest images and rebuild if needed
+            echo "⬇️ Pulling images and rebuilding..."
             docker-compose pull
             docker-compose build --no-cache
 
-            # Start services in detached mode
+            echo "🚀 Starting services..."
             docker-compose up -d
 
-            # Show running containers
+            echo "📦 Running containers:"
             docker-compose ps
           EOF
