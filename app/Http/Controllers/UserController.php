@@ -12,8 +12,8 @@ class UserController extends Controller
     // ✅ عرض كل المستخدمين
     public function index()
     {
-        $users = User::all();
-        return response()->json($users);
+        $data = User::all();
+        return response()->json($data);
     }
 
     // ✅ عرض مستخدم واحد بالتفصيل

@@ -41,3 +41,8 @@ Route::middleware(['jwt.auth'])->get('/my-assets', [AssetController::class, 'get
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+
+Route::get('/health', function () {
+    return response()->json(['status' => 'ok']);
+});
