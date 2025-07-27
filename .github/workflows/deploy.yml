@@ -47,9 +47,21 @@ jobs:
 
             echo "🚀 Starting services..."
             docker-compose up -d
+            
+            echo "🔐 Fixing Laravel folder permissions..."
+            docker-compose exec app chown -R www-data:www-data storage bootstrap/cache
+            docker-compose exec app chmod -R 775 storage bootstrap/cache
+            
+            echo "📦 Installing Composer dependencies..."
+            docker-compose exec app composer install --no-dev --optimize-autoloader
+            
+            echo "🧱 Running database migrations..."
+            docker-compose exec app php artisan migrate --force
+            
+            echo "⚙️ Caching Laravel configuration..."
+            docker-compose exec app php artisan config:cache
+            docker-compose exec app php artisan route:cache
+            docker-compose exec app php artisan view:cache
 
-            docker-compose exec app composer install
-
-            docker-compose exec app php artisan migrate
 
           EOF
