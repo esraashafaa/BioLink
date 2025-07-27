@@ -36,6 +36,8 @@ jobs:
             git clean -fd
             git pull origin main
 
+            cp docker.env .env
+
             echo "🛑 Stopping containers..."
             docker-compose down
 
@@ -45,8 +47,6 @@ jobs:
 
             echo "🚀 Starting services..."
             docker-compose up -d
-
-            cp docker.env .env
 
             docker-compose exec app composer install
 
